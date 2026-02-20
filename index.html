@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Voucher Tax</title>
+  <style>
+    body {
+      font-family: Georgia, serif;
+      max-width: 800px;
+      margin: 60px auto;
+      padding: 0 20px;
+      background: #fff;
+      color: #222;
+      line-height: 1.6;
+      position: relative;
+    }
+    .title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 3px solid #8b0000;
+      padding-bottom: 10px;
+      margin-bottom: 0;
+    }
+    .title-row h1 {
+      flex: 1;
+      text-align: center;
+      margin: 0;
+      border: none;
+      padding: 0;
+    }
+    h1 {
+      font-size: 2.4em;
+      color: #8b0000;
+    }
+    .flag-img {
+      width: 180px;
+      height: 115px;
+      object-fit: contain;
+      opacity: 0.12;
+      flex-shrink: 0;
+    }
+    .section {
+      margin: 40px 0;
+      font-size: 1.15em;
+    }
+    a {
+      color: #8b0000;
+      font-weight: bold;
+    }
+    .swindle-box {
+      margin-top: 50px;
+      background: #f9f2f2;
+      border-left: 6px solid #8b0000;
+      padding: 24px 28px;
+      border-radius: 4px;
+    }
+    .swindle-box h2 {
+      font-size: 1.6em;
+      color: #8b0000;
+      margin-top: 0;
+    }
+    .school-name {
+      font-size: 1.3em;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    .school-payment {
+      font-size: 1.1em;
+      color: #555;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="title-row">
+    <img class="flag-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Flag_of_Wisconsin.svg/1280px-Flag_of_Wisconsin.svg.png" alt="Wisconsin Flag" />
+    <h1>The Voucher Tax</h1>
+    <img class="flag-img" src="https://upload.wikimedia.org/wikipedia/en/thumb/a/a4/Flag_of_the_United_States.svg/1280px-Flag_of_the_United_States.svg.png" alt="American Flag" />
+  </div>
+
+  <div class="section">
+    <p>Find the private school near you and how much of your money it's taking this year.</p>
+    <p><a href="https://dpi.wi.gov/sites/default/files/imce/parental-education-options/Choice/Data_and_Reports/2025-26/2025-26_summary_mpcp_wpcp_rpcp_snsp.pdf" target="_blank">2025-26 private school subsidies</a></p>
+  </div>
+
+  <div class="section">
+    <p>Tell them to stop the voucher tax.</p>
+    <p><a href="https://myvote.wi.gov/en-us/My-Elected-Officials" target="_blank">Contact your rep.</a></p>
+  </div>
+
+  <div class="swindle-box">
+    <h2>Swindle of the Day</h2>
+    <div class="school-name" id="school-name">Loading...</div>
+    <div class="school-payment" id="school-payment"></div>
+  </div>
+
+  <script>
+    const schools = [
+      ["Abundant Life Christian School - Madison", "$2,123,365.00"],
+      ["Academy of Excellence - Milwaukee", "$50,277,272.80"],
+      ["All Saints Regional Catholic School - Berlin", "$475,050.40"],
+      ["Aquinas Academy - Menomonee Falls", "$1,094,226.20"],
+      ["Aquinas Catholic Schools - La Crosse", "$2,319,062.60"],
+      ["Ascension Academy Inc - Cumberland", "$315,433.00"],
+      ["Assumption Catholic Schools - Wisconsin Rapids", "$2,941,679.00"],
+      ["Assumption of the Blessed Virgin Mary School - Pulaski", "$278,451.20"],
+      ["Atlas Preparatory Academy Inc - Milwaukee", "$4,252,519.19"],
+      ["Atonement Lutheran School - Milwaukee", "$3,416,819.00"],
+      ["Bader Hillel High Inc - Glendale", "$729,217.10"],
+      ["Badger State Baptist School - Oak Creek", "$1,652,358.40"],
+      ["Bay City Christian School - Green Bay", "$2,275,478.60"],
+      ["Beautiful Savior Lutheran School - Waukesha", "$647,929.60"],
+      ["Believers in Christ Christian Academy - Milwaukee", "$1,589,689.80"],
+      ["Bethany Evangelical Lutheran School - Manitowoc", "$700,234.00"],
+      ["Bethany Lutheran School - Hustisford", "$252,346.40"],
+      ["Bethlehem Evangelical Lutheran School - Menomonee Falls", "$1,095,613.90"],
+      ["Bethlehem Lutheran School - Sheboygan", "$765,740.80"],
+      ["Blessed Sacrament Catholic School - Milwaukee", "$1,829,704.80"],
+      ["Blessed Savior Catholic School - Milwaukee", "$4,531,358.20"],
+      ["Bright Child Learning Center - Madison", "$16,049.00"],
+      ["Burlington Catholic School - Burlington", "$1,028,976.00"],
+      ["Calvary Baptist Christian School - Watertown", "$1,090,163.60"],
+      ["Carter's Christian Academy Inc - Milwaukee", "$3,247,462.64"],
+      ["Catholic Central High School - Burlington", "$441,243.00"],
+      ["Catholic East Elementary - Milwaukee", "$2,144,987.80"],
+      ["Catholic Memorial High School of Waukesha Inc - Waukesha", "$1,973,609.00"],
+      ["Celebration Lutheran School - Appleton", "$413,326.00"],
+      ["Central Wisconsin Christian School - Waupun", "$2,833,146.60"],
+      ["CERT School - Racine", "$814,566.62"],
+      ["Chesterton Academy of Milwaukee Inc - Menomonee Falls", "$815,631.00"],
+      ["Chilton Area Catholic School - Chilton", "$450,307.80"],
+      ["Christ Alone Lutheran School - Thiensville", "$284,977.40"],
+      ["Christ Child Academy - Sheboygan", "$502,517.40"],
+      ["Christ King School - Wauwatosa", "$208,637.00"],
+      ["Christ Lutheran School - Big Bend", "$438,653.00"],
+      ["Christ St Peter Lutheran School - Milwaukee", "$2,340,197.40"],
+      ["Christ the Lord Evangelical Lutheran School - Brookfield", "$358,941.00"],
+      ["Christian Faith Academy of Higher Learning - Milwaukee", "$343,713.20"],
+      ["Christus Vincit Academy - Merrill", "$643,918.40"],
+      ["Clara Mohammed School - Milwaukee", "$585,556.00"],
+      ["Columbus Catholic Schools - Marshfield", "$2,580,836.20"],
+      ["Community Christian School of Baraboo - Baraboo", "$1,036,568.80"],
+      ["Concordia Lutheran School - Sturtevant", "$2,039,652.60"],
+      ["Cornerstone Lutheran High School - Chippewa Falls", "$120,339.00"],
+      ["Corpus Christi Parish School - Waukesha", "$1,750,995.60"],
+      ["Coulee Christian School - West Salem", "$2,032,074.20"],
+      ["Cristo Rey Jesuit Milwaukee High School - Milwaukee", "$6,190,624.98"],
+      ["Cross Trainers Academy - Milwaukee", "$5,830,160.72"],
+      ["Crown of Life Christian Academy - Fort Atkinson", "$1,728,445.00"],
+      ["Crown of Life Evangelical Lutheran School - Hubertus", "$243,644.80"],
+      ["David's Star Lutheran School - Jackson", "$569,421.80"],
+      ["Destiny High School - Milwaukee", "$2,867,119.50"],
+      ["Divine Destiny School - Milwaukee", "$720,057.40"],
+      ["Divine Mercy Academy - Middleton", "$48,147.00"],
+      ["Divine Mercy School - South Milwaukee", "$639,567.60"],
+      ["Divine Redeemer Lutheran School - Hartland", "$1,470,700.60"],
+      ["Divine Savior Catholic School - Kiel", "$141,401.00"],
+      ["Divine Savior Holy Angels High School - Milwaukee", "$2,559,236.00"],
+      ["Dominican High School - Whitefish Bay", "$1,575,119.00"],
+      ["Eagle School - Richland Center", "$288,932.50"],
+      ["Early View Academy of Excellence - Milwaukee", "$3,622,280.60"],
+      ["Eastbrook Academy - Milwaukee", "$3,887,478.65"],
+      ["Eastside Evangelical Lutheran Elementary - Madison", "$465,535.60"],
+      ["El Puente High School - Milwaukee", "$1,478,901.00"],
+      ["Emanuel Lutheran School - New London", "$959,150.00"],
+      ["EverGreen Academy - Mount Pleasant", "$4,485,674.80"],
+      ["Faith Christian Academy - Wausau", "$1,898,928.86"],
+      ["Faith Christian School - Coleman", "$813,948.00"],
+      ["Faith Christian School - Williams Bay", "$1,087,336.80"],
+      ["Faith Lutheran School - Fond du Lac", "$990,884.80"],
+      ["First Evangelical Lutheran School - Elkhorn", "$154,453.40"],
+      ["First Evangelical Lutheran School - La Crosse", "$576,481.00"],
+      ["First Evangelical Lutheran School - Lake Geneva", "$158,804.20"],
+      ["First German Evangelical Lutheran Grade School - Manitowoc", "$922,124.80"],
+      ["First Immanuel Lutheran School - Cedarburg", "$602,585.80"],
+      ["Fond du Lac Christian School - Fond du Lac", "$969,621.00"],
+      ["Fox Valley Lutheran High School - Appleton", "$4,447,301.00"],
+      ["Garden Homes Lutheran School - Milwaukee", "$2,782,336.60"],
+      ["Good Shepherd Evangelical Lutheran School - West Bend", "$1,245,983.00"],
+      ["Good Shepherd Lutheran School - Watertown", "$985,160.00"],
+      ["Grace Christian Academy - West Allis", "$2,405,738.20"],
+      ["Grace Lutheran School - Menomonee Falls", "$687,426.40"],
+      ["Grace Lutheran School - Oak Creek", "$574,305.60"],
+      ["Grace Lutheran School - Oshkosh", "$1,261,530.60"],
+      ["Granville Lutheran School - Milwaukee", "$2,850,045.23"],
+      ["Greater Holy Temple Christian Academy - Milwaukee", "$5,773,511.60"],
+      ["Green Bay Adventist Junior Academy - Green Bay", "$255,159.00"],
+      ["Green Bay Area Catholic Education East - Green Bay", "$4,348,624.60"],
+      ["Green Bay Area Catholic Education South - Green Bay", "$1,339,801.60"],
+      ["Green Bay Area Catholic Education West - Green Bay", "$1,287,836.80"],
+      ["Green Bay Trinity Lutheran School - Green Bay", "$837,529.00"],
+      ["Guidance Academy - South Milwaukee", "$3,843,228.35"],
+      ["Hales Corners Lutheran School - Hales Corners", "$1,698,987.40"],
+      ["Heritage Christian Schools - New Berlin", "$6,131,971.96"],
+      ["High Point Christian School - Madison", "$884,898.20"],
+      ["Hillel Academy - Milwaukee", "$1,647,056.94"],
+      ["Holy Cross Lutheran School - Madison", "$467,711.00"],
+      ["Holy Family School - Brillion", "$376,344.20"],
+      ["Holy Family School - Whitefish Bay", "$364,386.80"],
+      ["Holy Rosary Catholic School - Kewaunee", "$176,207.40"],
+      ["Holy Rosary Catholic School - Medford", "$449,818.20"],
+      ["Holy Spirit Catholic School - Appleton", "$884,610.00"],
+      ["Holy Trinity School - Casco", "$50,034.20"],
+      ["Holyland Catholic School - Malone", "$116,405.60"],
+      ["Hope Christian School Caritas - Milwaukee", "$3,535,025.00"],
+      ["Hope Christian School Fidelis - Milwaukee", "$6,328,238.60"],
+      ["Hope Christian School Fortis - Milwaukee", "$3,215,241.20"],
+      ["Hope Christian School Prima - Milwaukee", "$6,023,025.34"],
+      ["Hope Christian School Semper - Milwaukee", "$5,336,256.20"],
+      ["Hope Christian School Via - Racine", "$2,819,318.40"],
+      ["Immaculate Heart of Mary Catholic School - Monona", "$316,341.00"],
+      ["Immanuel Evangelical Lutheran Grade - Manitowoc", "$356,944.00"],
+      ["Immanuel Evangelical Lutheran School - Greenville", "$1,061,500.40"],
+      ["Immanuel Lutheran School - Brookfield", "$3,190,162.80"],
+      ["Immanuel Lutheran School - Manitowoc", "$315,433.00"],
+      ["Immanuel Lutheran School - Mayville", "$163,155.00"],
+      ["Immanuel Lutheran School - Wisconsin Rapids", "$1,325,726.60"],
+      ["Impact Christian Academy - Verona", "$494,746.00"],
+      ["Institute of Technology and Academics - Milwaukee", "$3,698,180.00"],
+      ["Jo's Learning Academy - Milwaukee", "$391,572.00"],
+      ["Journeys Lutheran School - Hales Corners", "$1,854,102.66"],
+      ["Karis Academy - Waupaca", "$358,941.00"],
+      ["Kenosha Christian Academy - Kenosha", "$1,035,490.40"],
+      ["Kenosha Lutheran Academy - Kenosha", "$1,055,357.20"],
+      ["Kettle Moraine Lutheran High School - Jackson", "$3,310,804.00"],
+      ["Kingdom Prep Lutheran High School - Wauwatosa", "$2,809,022.54"],
+      ["King's Academy Christian School Inc - Milwaukee", "$2,139,449.80"],
+      ["Lake Country Lutheran High School - Hartland", "$1,492,272.00"],
+      ["Lakeside Lutheran High School - Lake Mills", "$2,695,643.00"],
+      ["Lebanon Lutheran School - Watertown", "$56,560.40"],
+      ["Legacy Christian School of Manitowoc - Manitowoc", "$371,993.40"],
+      ["Liberty Christian School - Chippewa Falls", "$250,855.64"],
+      ["Lighthouse Christian School - Madison", "$3,065,261.30"],
+      ["Living Hope Lutheran - West Allis", "$602,585.80"],
+      ["Living Word Lutheran High School - Jackson", "$2,166,178.00"],
+      ["Lourdes Academy - Oshkosh", "$2,971,771.00"],
+      ["Lumen Christi Catholic School - Mequon", "$399,795.80"],
+      ["Luther High School - Onalaska", "$1,042,938.00"],
+      ["Luther Preparatory School - Watertown", "$1,845,198.00"],
+      ["Lutheran High School Association of Racine - Racine", "$4,372,317.00"],
+      ["Madinah Academy of Madison - Madison", "$1,236,022.00"],
+      ["Malaika Early Learning Center - Milwaukee", "$1,063,770.60"],
+      ["Manitowoc Lutheran High School - Manitowoc", "$1,909,394.00"],
+      ["Maranatha Baptist Academy - Watertown", "$441,243.00"],
+      ["Marquette University High School - Milwaukee", "$2,291,797.00"],
+      ["Martin Luther High School - Greendale", "$7,665,928.93"],
+      ["Martin Luther School - Oshkosh", "$652,620.00"],
+      ["Mary Queen of Saints Catholic Academy - West Allis", "$1,019,196.60"],
+      ["McDonell Area Catholic Schools - Chippewa Falls", "$2,826,952.06"],
+      ["Messmer High School - Milwaukee", "$6,859,324.78"],
+      ["Milwaukee Lutheran High School - Milwaukee", "$14,739,544.23"],
+      ["Milwaukee Seventh Day Adventist School - Milwaukee", "$2,282,851.00"],
+      ["Montessori School of Waukesha - Waukesha", "$128,503.70"],
+      ["Morning Star Lutheran School - Jackson", "$876,484.80"],
+      ["Morrison Zion Lutheran School - Greenleaf", "$274,100.40"],
+      ["Mother of Good Counsel School - Milwaukee", "$1,923,053.60"],
+      ["Mount Calvary Lutheran School - Milwaukee", "$2,314,092.60"],
+      ["Mount Calvary Lutheran School - Waukesha", "$385,045.80"],
+      ["Mount Horeb Christian School - Mount Horeb", "$564,826.20"],
+      ["Mount Lebanon Lutheran School - Milwaukee", "$2,579,136.40"],
+      ["Mount Olive Christian Day School - Milwaukee", "$1,418,360.80"],
+      ["Mount Olive Evangelical Lutheran School - Appleton", "$1,001,836.80"],
+      ["Nativity Jesuit Academy - Milwaukee", "$2,874,110.48"],
+      ["Neenah Lutheran School - Neenah", "$1,044,501.90"],
+      ["New Testament Christian Academy - Milwaukee", "$1,715,605.45"],
+      ["Newman Catholic Classical School Holy Name - Wausau", "$174,032.00"],
+      ["Newman Catholic Schools - Wausau", "$1,803,872.20"],
+      ["Northeastern Wisconsin Lutheran High School - Green Bay", "$601,695.00"],
+      ["Northland Lutheran High School - Kronenwetter", "$780,893.00"],
+      ["Northwest Catholic School - Milwaukee", "$1,014,868.89"],
+      ["Northwest Lutheran School - Milwaukee", "$2,954,813.53"],
+      ["Notre Dame de la Baie Academy - Green Bay", "$3,521,948.00"],
+      ["Notre Dame School of Milwaukee - Milwaukee", "$7,828,095.04"],
+      ["Oostburg Christian School - Oostburg", "$1,564,156.00"],
+      ["Open Wings Learning Community - Kenosha", "$604,690.00"],
+      ["Our Father's Lutheran School - Greenfield", "$1,037,665.80"],
+      ["Our Lady of Assumption Grade School - Beloit", "$273,855.60"],
+      ["Our Lady of Sorrows Grade School - Ladysmith", "$352,414.80"],
+      ["Our Lady of The Lake Catholic School - Ashland", "$1,047,670.20"],
+      ["Our Lady Queen of Peace - Milwaukee", "$2,508,032.11"],
+      ["Our Redeemer Lutheran School - Delavan", "$234,943.20"],
+      ["Our Redeemer Lutheran School - Madison", "$337,187.00"],
+      ["Our Savior Lutheran School - Grafton", "$198,782.60"],
+      ["Ozaukee Christian School - West Bend", "$511,219.00"],
+      ["Pacelli Catholic Schools - Stevens Point", "$2,278,453.22"],
+      ["Peace Lutheran School - Antigo", "$848,406.00"],
+      ["Peace Lutheran School - Hartford", "$867,250.20"],
+      ["Pella Hill Virtual Academy - Madison", "$406,217.40"],
+      ["Petersen Adventist School - Columbus", "$87,016.00"],
+      ["Pilgrim Evangelical Lutheran School - Menomonee Falls", "$739,391.20"],
+      ["Pilgrim Lutheran School - Green Bay", "$1,115,980.20"],
+      ["Pilgrim Lutheran School - Wauwatosa", "$2,891,350.14"],
+      ["Pius XI Catholic High School - Milwaukee", "$7,174,966.00"],
+      ["Pleasant Ridge Waldorf School - Viroqua", "$689,601.80"],
+      ["Prairie Catholic School - Prairie Du Chien", "$291,503.60"],
+      ["Prairie Hill Waldorf School - Pewaukee", "$881,037.00"],
+      ["Prince of Peace - Milwaukee", "$4,038,107.83"],
+      ["Queen of the Apostles School - Tomah", "$621,781.40"],
+      ["Racine Christian School - Racine", "$1,607,620.60"],
+      ["Randolph Christian School Society Inc - Randolph", "$410,084.60"],
+      ["Redeemer Lutheran Grade School - Fond Du Lac", "$516,657.50"],
+      ["Regis Catholic Schools - Eau Claire", "$1,689,395.00"],
+      ["Renaissance Lutheran School - Racine", "$4,134,479.51"],
+      ["Right Step Inc - Milwaukee", "$442,353.00"],
+      ["Risen Savior Lutheran School - Milwaukee", "$4,014,826.83"],
+      ["Riverview Lutheran School - Appleton", "$957,176.00"],
+      ["Rock County Christian School - Beloit", "$2,042,770.52"],
+      ["Roncalli Catholic Schools - Manitowoc", "$3,206,853.60"],
+      ["Sacred Heart Catholic School - Shawano", "$548,200.80"],
+      ["Saint Adalbert School - Milwaukee", "$4,659,015.09"],
+      ["Saint Agnes School - Butler", "$1,786,003.40"],
+      ["Saint Ambrose Academy - Madison", "$1,345,209.00"],
+      ["Saint Andrew Parish School - Delavan", "$816,884.40"],
+      ["Saint Anthony de Padua Catholic School - Athens", "$76,139.00"],
+      ["Saint Anthony School - Milwaukee", "$16,196,791.83"],
+      ["Saint Anthony School - Oconto Falls", "$195,786.00"],
+      ["Saint Augustine Preparatory Academy - Milwaukee", "$27,886,324.71"],
+      ["Saint Augustine School - Colgate", "$194,885.00"],
+      ["Saint Boniface Grade School - Germantown", "$93,542.20"],
+      ["Saint Bruno Parish School - Dousman", "$293,967.20"],
+      ["Saint Catherine School - Milwaukee", "$1,239,978.00"],
+      ["Saint Charles Borromeo Catholic School - Milwaukee", "$1,530,948.60"],
+      ["Saint Clare Catholic School - Wrightstown", "$171,856.60"],
+      ["Saint Coletta Day School - Milwaukee", "$481,470.00"],
+      ["Saint Edward School - Appleton", "$95,717.60"],
+      ["Saint Elizabeth Ann Seton Catholic School - Sheboygan", "$600,453.80"],
+      ["Saint Eugene School - Fox Point", "$282,462.40"],
+      ["Saint Frances Cabrini School - West Bend", "$163,155.00"],
+      ["Saint Francis de Sales Grade School - Spooner", "$339,362.40"],
+      ["Saint Francis de Sales Parish School - Lake Geneva", "$224,066.20"],
+      ["Saint Francis Xavier Catholic School - Merrill", "$163,155.00"],
+      ["Saint Francis Xavier Catholic School System Inc - Appleton", "$4,327,283.80"],
+      ["Saint Gregory the Great Parish School - Milwaukee", "$1,644,602.40"],
+      ["Saint Ignatius of Loyola Catholic School - Kaukauna", "$1,432,557.80"],
+      ["Saint Jacobi Lutheran School - Greenfield", "$1,148,611.20"],
+      ["Saint James Catholic School - Madison", "$511,219.00"],
+      ["Saint James Lutheran School - Shawano", "$696,128.00"],
+      ["Saint James the Less Academy - Mukwonago", "$417,676.80"],
+      ["Saint Jerome Parish School - Oconomowoc", "$278,451.20"],
+      ["Saint Joan Antida High School - Milwaukee", "$2,691,210.20"],
+      ["Saint Joan of Arc School - Nashotah", "$191,435.20"],
+      ["Saint John Bosco Catholic School - Sturgeon Bay", "$454,658.60"],
+      ["Saint John Ev Lutheran School - Waterloo", "$344,108.00"],
+      ["Saint John Evangelical Lutheran School - Wrightstown", "$265,398.80"],
+      ["Saint John Grade School - Little Chute", "$456,834.00"],
+      ["Saint John Lutheran School - Berlin", "$504,692.80"],
+      ["Saint John Lutheran School - Merrill", "$576,481.00"],
+      ["Saint John Lutheran School - Peshtigo", "$326,310.00"],
+      ["Saint John Lutheran School - Plymouth", "$538,433.20"],
+      ["Saint John Lutheran School - Random Lake", "$126,173.20"],
+      ["Saint John Lutheran School - Wausau", "$211,013.80"],
+      ["Saint John Paul II Classical School - Green Bay", "$1,031,304.00"],
+      ["Saint John Paul II School - Milwaukee", "$1,753,372.40"],
+      ["Saint John Saint James Lutheran School - Reedsville", "$239,294.00"],
+      ["Saint John School - Edgar", "$215,514.60"],
+      ["Saint John the Baptist Catholic School - Plymouth", "$193,077.60"],
+      ["Saint John the Evangelist - Greenfield", "$1,068,121.40"],
+      ["Saint John XXIII Catholic School - Port Washington", "$666,047.40"],
+      ["Saint John's Ev Lutheran School - Sparta", "$190,369.20"],
+      ["Saint John's Evangelical Lutheran School - Jefferson", "$378,519.60"],
+      ["Saint John's Evangelical Lutheran School - Wauwatosa", "$811,467.60"],
+      ["Saint John's Lutheran Grade School - Two Rivers", "$452,483.20"],
+      ["Saint John's Lutheran School - Baraboo", "$332,836.20"],
+      ["Saint John's Lutheran School - Burlington", "$474,525.40"],
+      ["Saint John's Lutheran School - Glendale", "$833,178.20"],
+      ["Saint John's Lutheran School - Juneau", "$278,451.20"],
+      ["Saint John's Lutheran School - Lannon", "$561,541.40"],
+      ["Saint John's Lutheran School - Lomira", "$291,503.60"],
+      ["Saint John's Lutheran School - Mayville", "$825,917.60"],
+      ["Saint John's Lutheran School - Milwaukee", "$3,541,293.84"],
+      ["Saint Johns Lutheran School - Mukwonago", "$284,977.40"],
+      ["Saint John's Lutheran School - Newburg", "$502,667.40"],
+      ["Saint John's Lutheran School - Portage", "$217,540.00"],
+      ["Saint John's Lutheran School - Racine", "$1,840,921.34"],
+      ["Saint John's Lutheran School - Watertown", "$728,194.40"],
+      ["Saint John's Lutheran School - West Bend", "$985,456.20"],
+      ["Saint John's Northwestern Academies - Delafield", "$128,722.00"],
+      ["Saint Josaphat Parish School - Milwaukee", "$2,364,659.80"],
+      ["Saint Joseph Academy - Milwaukee", "$4,159,364.80"],
+      ["Saint Joseph Catholic Academy - Kenosha", "$2,718,406.10"],
+      ["Saint Joseph Catholic School - Big Bend", "$189,836.20"],
+      ["Saint Joseph Catholic School - Boyd", "$186,551.40"],
+      ["Saint Joseph Catholic School - Stratford", "$43,508.00"],
+      ["Saint Joseph Grade School - Menomonie", "$97,893.00"],
+      ["Saint Joseph Parish School - Grafton", "$383,810.00"],
+      ["Saint Joseph School - Rice Lake", "$616,747.60"],
+      ["Saint Joseph School - Wauwatosa", "$717,882.00"],
+      ["Saint Katharine Drexel School - Beaver Dam", "$565,604.00"],
+      ["Saint Kilian School - Hartford", "$97,893.00"],
+      ["Saint Leonard School - Muskego", "$252,346.40"],
+      ["Saint Lucas Grade School - Kewaskum", "$213,189.20"],
+      ["Saint Lucas Lutheran School - Milwaukee", "$1,584,555.80"],
+      ["Saint Lukes Lutheran School - Oakfield", "$700,447.20"],
+      ["Saint Marcus Lutheran School - Milwaukee", "$12,918,097.01"],
+      ["Saint Margaret Mary School - Milwaukee", "$1,670,707.20"],
+      ["Saint Mark Lutheran School - Eau Claire", "$672,242.00"],
+      ["Saint Mark Lutheran School - Green Bay", "$785,651.00"],
+      ["Saint Martin Lutheran School - Clintonville", "$500,342.00"],
+      ["Saint Mary Catholic School - Hilbert", "$56,560.40"],
+      ["Saint Mary Catholic Schools - Neenah", "$3,712,099.00"],
+      ["Saint Mary Czestochowa - Milwaukee", "$2,789,421.90"],
+      ["Saint Mary of the Assumption Catholic School - Richland Center", "$330,660.80"],
+      ["Saint Mary of the Immaculate Conception - Greenville", "$439,430.80"],
+      ["Saint Mary Parish School - Hales Corners", "$202,217.40"],
+      ["Saint Mary Parish School - Menomonee Falls", "$439,869.00"],
+      ["Saint Mary Saint Michael School - Cato", "$323,463.40"],
+      ["Saint Mary School - Colby", "$620,277.20"],
+      ["Saint Mary School - Luxemburg", "$150,102.60"],
+      ["Saint Mary School - Mayville", "$269,749.60"],
+      ["Saint Marys Grade School - Tomahawk", "$254,521.80"],
+      ["Saint Mary's Springs Academy - Fond Du Lac", "$2,655,150.40"],
+      ["Saint Matthew Grade School - Campbellsport", "$245,820.20"],
+      ["Saint Matthew School - Oak Creek", "$237,118.60"],
+      ["Saint Matthew's Evangelical Lutheran School - Stoddard", "$302,380.60"],
+      ["Saint Matthew's Lutheran School - Oconomowoc", "$1,205,953.20"],
+      ["Saint Matthias Parish School - Milwaukee", "$1,701,162.80"],
+      ["Saint Nicholas Catholic School - Freedom", "$389,396.60"],
+      ["Saint Patrick School - Sparta", "$317,608.40"],
+      ["Saint Paul Grade School - Bloomer", "$289,328.20"],
+      ["Saint Paul Lutheran - Stevens Point", "$672,198.60"],
+      ["Saint Paul Lutheran School - Appleton", "$747,315.00"],
+      ["Saint Paul Lutheran School - Bonduel", "$880,365.80"],
+      ["Saint Paul Lutheran School - Grafton", "$674,374.00"],
+      ["Saint Paul Lutheran School - Green Bay", "$848,556.00"],
+      ["Saint Paul Lutheran School - Luxemburg", "$226,924.60"],
+      ["Saint Paul Lutheran School - Manawa", "$467,711.00"],
+      ["Saint Paul Lutheran School - Sheboygan", "$469,886.40"],
+      ["Saint Paul's Evangelical Lutheran School - Algoma", "$385,045.80"],
+      ["Saint Paul's Evangelical Lutheran School - Bangor", "$87,016.00"],
+      ["Saint Paul's Evangelical Lutheran School - Ixonia", "$176,207.40"],
+      ["Saint Paul's Evangelical Lutheran School - Oconomowoc", "$696,791.20"],
+      ["Saint Paul's Evangelical Lutheran School - Onalaska", "$1,157,601.00"],
+      ["Saint Paul's Lutheran School - Cudahy", "$300,205.20"],
+      ["Saint Paul's Lutheran School - East Troy", "$165,330.40"],
+      ["Saint Paul's Lutheran School - Fort Atkinson", "$502,517.40"],
+      ["Saint Paul's Lutheran School - Howards Grove", "$312,831.20"],
+      ["Saint Paul's Lutheran School - Janesville", "$750,513.00"],
+      ["Saint Paul's Lutheran School - Menomonie", "$662,292.80"],
+      ["Saint Pauls Lutheran School - Mount Calvary", "$339,362.40"],
+      ["Saint Paul's Lutheran School - Muskego", "$689,601.80"],
+      ["Saint Paul's Lutheran School - West Allis", "$730,934.40"],
+      ["Saint Peter Catholic School - Slinger", "$67,437.40"],
+      ["Saint Peter Grade School - Chippewa Falls", "$108,770.00"],
+      ["Saint Peter Immanuel Lutheran School - Milwaukee", "$2,178,117.35"],
+      ["Saint Peter Lutheran School - Freedom", "$1,366,238.00"],
+      ["Saint Peter Lutheran School - Schofield", "$736,438.00"],
+      ["Saint Peter's Lutheran Grade School - Fond du Lac", "$337,187.00"],
+      ["Saint Peter's Lutheran School - Helenville", "$284,977.40"],
+      ["Saint Peters Lutheran School - Reedsburg", "$807,073.40"],
+      ["Saint Rafael the Archangel School - Milwaukee", "$3,363,392.44"],
+      ["Saint Robert School - Shorewood", "$315,411.20"],
+      ["Saint Roman Parish School - Milwaukee", "$3,694,618.80"],
+      ["Saint Rose - Milwaukee", "$2,808,204.49"],
+      ["Saint Sebastian School - Milwaukee", "$2,322,016.40"],
+      ["Saint Stephen Lutheran School - Horicon", "$119,647.00"],
+      ["Saint Thomas Aquinas Academy - Marinette", "$740,077.20"],
+      ["Saint Thomas Aquinas Academy - Milwaukee", "$1,533,945.20"],
+      ["Saint Thomas More High School - Milwaukee", "$4,051,413.00"],
+      ["Saint Vincent Pallotti Catholic School - Milwaukee", "$2,012,245.00"],
+      ["Salam School - Milwaukee", "$13,623,439.00"],
+      ["Salem Evangelical Lutheran School - Milwaukee", "$2,101,436.40"],
+      ["Sheboygan Area Lutheran High School - Sheboygan", "$1,109,793.00"],
+      ["Sheboygan Christian School - Sheboygan", "$4,223,941.80"],
+      ["Shepherd of the Valley Lutheran School Inc - Menasha", "$774,442.40"],
+      ["Shepherds Watch Christian Academy - Mattoon", "$465,535.60"],
+      ["Shining Star Christian Schools Inc - Milwaukee", "$11,000,582.00"],
+      ["Shoreland Lutheran High School - Kenosha", "$3,944,464.00"],
+      ["Siena Catholic Schools of Racine Inc - Racine", "$15,539,891.10"],
+      ["Siloah Lutheran School - Milwaukee", "$1,461,868.80"],
+      ["Sonnenberg Schools - Racine", "$3,027,636.73"],
+      ["SS Peter and Paul Grade School - Independence", "$95,521.36"],
+      ["Star of Bethlehem Evangelical Lutheran School - New Berlin", "$602,585.80"],
+      ["Stevens Point Christian Academy - Stevens Point", "$524,400.00"],
+      ["Summit Christian Academy - Menomonie", "$544,487.20"],
+      ["Superior Learning Academy - Superior", "$582,917.04"],
+      ["Tamarack Waldorf School - Milwaukee", "$1,944,851.00"],
+      ["The City School - Milwaukee", "$1,709,863.35"],
+      ["Thorp Catholic School - Thorp", "$264,044.60"],
+      ["Torah Academy of Milwaukee - Glendale", "$510,776.00"],
+      ["Trinity Evangelical Lutheran School - Brillion", "$130,524.00"],
+      ["Trinity Lutheran Church and School - Campbellsport", "$206,663.00"],
+      ["Trinity Lutheran Classical High School - Elm Grove", "$93,597.00"],
+      ["Trinity Lutheran School - Athens", "$228,417.00"],
+      ["Trinity Lutheran School - Caledonia", "$1,076,823.00"],
+      ["Trinity Lutheran School - Hilbert", "$147,927.20"],
+      ["Trinity Lutheran School - Marinette", "$428,553.80"],
+      ["Trinity Lutheran School - Mequon", "$2,366,815.40"],
+      ["Trinity Lutheran School - Merrill", "$561,253.20"],
+      ["Trinity Lutheran School - Racine", "$2,075,331.60"],
+      ["Trinity Lutheran School - Sheboygan", "$773,664.60"],
+      ["Trinity Lutheran School - Waukesha", "$354,590.20"],
+      ["Trinity Lutheran School - Wausau", "$578,656.40"],
+      ["Trinity Lutheran School - West Bend", "$130,524.00"],
+      ["Trinity St Luke's Lutheran School - Watertown", "$881,656.80"],
+      ["TRIO Young Scholars - Oshkosh", "$89,874.40"],
+      ["Universal Scholars Academy - Milwaukee", "$648,269.20"],
+      ["Up Christian Academy Inc - Milwaukee", "$989,807.00"],
+      ["Valley Christian School - Osceola", "$690,030.00"],
+      ["Valley Christian School - Oshkosh", "$5,319,130.00"],
+      ["Victory Christian Academy - Milwaukee", "$5,321,860.60"],
+      ["Waupaca Christian Academy - Waupaca", "$1,194,140.40"],
+      ["Wauwatosa Lutheran School - Wauwatosa", "$735,285.20"],
+      ["Westside Christian School - Middleton", "$933,267.20"],
+      ["Winnebago Lutheran Academy - Fond du Lac", "$1,904,114.00"],
+      ["Wisconsin Academy - Columbus", "$535,741.00"],
+      ["Wisconsin Institute for Torah Study - Milwaukee", "$227,307.00"],
+      ["Wisconsin Lutheran High School - Milwaukee", "$7,853,710.71"],
+      ["Wisconsin Lutheran School - Racine", "$1,363,975.80"],
+      ["Wolf River Lutheran High School - Shawano", "$307,533.00"],
+      ["Wyldewood Christian School - Oshkosh", "$953,195.30"],
+      ["Yeshiva Elementary School - Milwaukee", "$2,306,197.60"],
+      ["Zion Lutheran School - Menomonee Falls", "$399,207.60"],
+      ["Zion Lutheran School of Wayside - Greenleaf", "$267,574.20"]
+    ];
+
+    // Pick a school based on the day of the year so it changes daily
+    const now = new Date();
+    const start = new Date(now.getFullYear(), 0, 0);
+    const diff = now - start;
+    const oneDay = 1000 * 60 * 60 * 24;
+    const dayOfYear = Math.floor(diff / oneDay);
+    const index = dayOfYear % schools.length;
+
+    const [name, payment] = schools[index];
+    document.getElementById("school-name").textContent = name;
+    document.getElementById("school-payment").textContent = "Estimated annualized voucher payment: " + payment;
+  </script>
+
+</body>
+</html>
